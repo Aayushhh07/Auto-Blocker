@@ -1,0 +1,38 @@
+{
+  "name": "auto-blocker",
+  "version": "1.0.0",
+  "description": "Automated blocking process for placement drives",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "nodemon --exec ts-node src/server.ts",
+    "dev:client": "cd client && npm start",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "tsc",
+    "build:client": "cd client && npm run build",
+    "start": "node dist/server.js",
+    "install:all": "npm install && cd client && npm install"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "dotenv": "^16.3.1",
+    "googleapis": "^128.0.0",
+    "xlsx": "^0.18.5",
+    "multer": "^2.0.0-rc.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^20.10.0",
+    "@types/multer": "^2.0.0",
+    "typescript": "^5.3.2",
+    "ts-node": "^10.9.1",
+    "nodemon": "^3.0.1",
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["placement", "automation", "google-sheets", "blocking"],
+  "author": "Auto-Blocker Team",
+  "license": "MIT"
+}
