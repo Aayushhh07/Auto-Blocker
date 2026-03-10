@@ -3,328 +3,154 @@
 flowchart TB
 
 %% ===============================
-%% CLIENT LAYER
+%% USERS
 %% ===============================
 
-subgraph CLIENT_LAYER["Client Layer"]
+subgraph USERS["Users"]
 
-A[User Browser]
-B[Next.js Frontend]
-C[Protocol Upload Page]
-D[Patient Screening Dashboard]
-E[Simulation Timeline UI]
-F[Patient Detail Page]
+U1[Clinical Trial Coordinator]
+U2[Research Team]
 
 end
 
-A --> B
-B --> C
-B --> D
-B --> E
-B --> F
-
 
 %% ===============================
-%% API COMMUNICATION
+%% FRONTEND
 %% ===============================
 
-subgraph API_COMMUNICATION["HTTP REST API"]
+subgraph FRONTEND["Frontend (Next.js)"]
 
-G[HTTP Requests]
-H[FastAPI Application Server]
+F1[Web Dashboard]
+F2[Protocol Upload]
+F3[Patient Screening]
+F4[Simulation Results]
 
 end
 
-C --> G
-D --> G
-E --> G
-F --> G
+U1 --> F1
+U2 --> F1
 
-G --> H
+F1 --> F2
+F1 --> F3
+F1 --> F4
 
 
 %% ===============================
-%% ROUTER LAYER
+%% BACKEND API
 %% ===============================
 
-subgraph ROUTER_LAYER["FastAPI Router Layer"]
+subgraph BACKEND["Backend API (FastAPI)"]
 
-R1[Health Router<br>GET /health]
-
-R2[Patient Router<br>
-POST /patients<br>
-GET /patients<br>
-GET /patients/:id]
-
-R3[Protocol Router<br>
-POST /protocol/upload<br>
-GET /protocol/:id/criteria]
-
-R4[Simulation Router<br>
-POST /simulate]
+B1[Patient Service]
+B2[Protocol Service]
+B3[Simulation Service]
 
 end
 
-H --> R1
-H --> R2
-H --> R3
-H --> R4
+F2 --> B2
+F3 --> B1
+F4 --> B3
 
 
 %% ===============================
-%% SCHEMA LAYER
+%% PROTOCOL PROCESSING
 %% ===============================
 
-subgraph SCHEMA_LAYER["Pydantic Schema Layer"]
+subgraph PROTOCOL["Protocol Processing"]
 
-S1[PatientCreate Schema]
-S2[PatientOut Schema]
-S3[PatientWithHistoryOut Schema]
-S4[ProtocolUpload Schema]
-S5[CriterionRule Schema]
-S6[SimulationResult Schema]
+P1[PDF Parser]
+P2[LLM Criteria Extraction]
+P3[Structured Eligibility Rules]
 
 end
 
-R2 --> S1
-R2 --> S2
-R2 --> S3
-R3 --> S4
-R3 --> S5
-R4 --> S6
+B2 --> P1
+P1 --> P2
+P2 --> P3
 
 
 %% ===============================
-%% SERVICE LAYER
+%% PATIENT ANALYSIS
 %% ===============================
 
-subgraph SERVICE_LAYER["Business Logic Services"]
+subgraph PATIENT_ANALYSIS["Patient Analysis"]
 
-SV1[Patient Service]
-SV2[Protocol Service]
-SV3[Criteria Extraction Service]
-SV4[Simulation Engine]
-SV5[Reasoning Engine]
+A1[Patient Data]
+A2[Lab Trend Analysis]
+A3[Future Health Projection]
 
 end
 
-R2 --> SV1
-R3 --> SV2
-R3 --> SV3
-R4 --> SV4
-SV4 --> SV5
+B1 --> A1
+A1 --> A2
+A2 --> A3
 
 
 %% ===============================
-%% UTILITY LAYER
+%% TRIAL SIMULATION
 %% ===============================
 
-subgraph UTILITY_LAYER["Utility / Processing Layer"]
+subgraph SIMULATION["Trial Eligibility Simulation"]
 
-U1[PDF Parser<br>PyMuPDF]
-U2[Section Splitter<br>Regex Parser]
-U3[Criteria Validator<br>Pydantic Validation]
-U4[Trend Analyzer<br>Numpy Linear Regression]
-U5[Rule Evaluation Engine]
+S1[Load Eligibility Rules]
+S2[Evaluate Patient vs Rules]
+S3[Risk & Compatibility Score]
 
 end
 
-SV2 --> U1
-U1 --> U2
-U2 --> SV3
-SV3 --> U3
-
-SV4 --> U4
-U4 --> U5
+P3 --> S1
+A3 --> S2
+S1 --> S2
+S2 --> S3
 
 
 %% ===============================
-%% AI / LLM LAYER
+%% AI REASONING
 %% ===============================
 
-subgraph AI_LAYER["AI Processing Layer"]
+subgraph AI["AI Reasoning"]
 
-AI1[Groq LLM Client]
-AI2[Eligibility Criteria Extraction]
-AI3[Reasoning Trace Generator]
+AI1[LLM Clinical Explanation]
 
 end
 
-SV3 --> AI1
-AI1 --> AI2
-
-SV5 --> AI1
-AI1 --> AI3
+S2 --> AI1
 
 
 %% ===============================
-%% ORM / DATABASE LAYER
+%% STORAGE
 %% ===============================
 
-subgraph ORM_LAYER["SQLAlchemy ORM Layer"]
+subgraph DATABASE["Database (PostgreSQL)"]
 
-ORM1[PatientProfile Model]
-ORM2[LabResult Model]
-ORM3[Medication Model]
-ORM4[Protocol Model]
-ORM5[CriterionRule Model]
-ORM6[SimulationResult Model]
+DB1[(Patients)]
+DB2[(Protocols)]
+DB3[(Simulation Results)]
 
 end
 
-SV1 --> ORM1
-SV1 --> ORM2
-SV1 --> ORM3
-
-SV2 --> ORM4
-SV3 --> ORM5
-
-SV4 --> ORM6
+A1 --> DB1
+P3 --> DB2
+S3 --> DB3
 
 
 %% ===============================
-%% DATABASE
+%% OUTPUT
 %% ===============================
 
-subgraph DATABASE["PostgreSQL Database"]
+subgraph OUTPUT["Dashboard Output"]
 
-DB1[(patient_profiles)]
-DB2[(lab_results)]
-DB3[(medications)]
-DB4[(protocols)]
-DB5[(criterion_rules)]
-DB6[(simulation_results)]
+O1[Compatibility Score]
+O2[Eligibility Timeline]
+O3[AI Explanation]
 
 end
 
-ORM1 --> DB1
-ORM2 --> DB2
-ORM3 --> DB3
-ORM4 --> DB4
-ORM5 --> DB5
-ORM6 --> DB6
+S3 --> O1
+S3 --> O2
+AI1 --> O3
 
-
-%% ===============================
-%% DOCKER INFRASTRUCTURE
-%% ===============================
-
-subgraph INFRASTRUCTURE["Docker Infrastructure"]
-
-D1[Docker Engine]
-D2[FastAPI Container]
-D3[PostgreSQL Container]
-
-end
-
-H --> D2
-
-DB1 --> D3
-DB2 --> D3
-DB3 --> D3
-DB4 --> D3
-DB5 --> D3
-DB6 --> D3
-
-D1 --> D2
-D1 --> D3
-
-
-%% ===============================
-%% DATA FLOW: PROTOCOL PROCESSING
-%% ===============================
-
-subgraph PROTOCOL_FLOW["Protocol Processing Pipeline"]
-
-PF1[Upload Protocol PDF]
-PF2[Extract Text]
-PF3[Identify Criteria Sections]
-PF4[LLM Extracts Structured Rules]
-PF5[Validate Rules]
-PF6[Store Criteria Rules]
-
-end
-
-R3 --> PF1
-PF1 --> PF2
-PF2 --> PF3
-PF3 --> PF4
-PF4 --> PF5
-PF5 --> PF6
-PF6 --> DB5
-
-
-%% ===============================
-%% DATA FLOW: PATIENT INGESTION
-%% ===============================
-
-subgraph PATIENT_FLOW["Patient Data Ingestion"]
-
-PA1[Receive Patient JSON]
-PA2[Validate with Schema]
-PA3[Create Patient Model]
-PA4[Insert Medications]
-PA5[Insert Lab History]
-
-end
-
-R2 --> PA1
-PA1 --> PA2
-PA2 --> PA3
-
-PA3 --> DB1
-PA3 --> PA4
-PA4 --> DB3
-
-PA3 --> PA5
-PA5 --> DB2
-
-
-%% ===============================
-%% DATA FLOW: SIMULATION ENGINE
-%% ===============================
-
-subgraph SIMULATION_FLOW["Digital Twin Simulation"]
-
-SM1[Fetch Patient Data]
-SM2[Compute Lab Trends]
-SM3[Project Future Values]
-SM4[Evaluate Criteria Rules]
-SM5[Generate Risk Matrix]
-SM6[LLM Reasoning Explanation]
-
-end
-
-R4 --> SM1
-
-SM1 --> DB1
-SM1 --> DB2
-SM1 --> DB3
-SM1 --> DB5
-
-SM1 --> SM2
-SM2 --> SM3
-SM3 --> SM4
-SM4 --> SM5
-SM5 --> SM6
-
-SM6 --> DB6
-
-
-%% ===============================
-%% RESPONSE FLOW
-%% ===============================
-
-subgraph RESPONSE_FLOW["Response Generation"]
-
-RE1[Simulation Results]
-RE2[Compatibility Score]
-RE3[Timeline Visualization Data]
-
-end
-
-DB6 --> RE1
-RE1 --> RE2
-RE2 --> RE3
-RE3 --> E
+O1 --> F4
+O2 --> F4
+O3 --> F4
 ```
