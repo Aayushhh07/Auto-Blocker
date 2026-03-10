@@ -7,12 +7,14 @@ flowchart TB
 %% ===============================
 
 subgraph CLIENT_LAYER["Client Layer"]
+
 A[User Browser]
 B[Next.js Frontend]
 C[Protocol Upload Page]
 D[Patient Screening Dashboard]
 E[Simulation Timeline UI]
 F[Patient Detail Page]
+
 end
 
 A --> B
@@ -27,8 +29,10 @@ B --> F
 %% ===============================
 
 subgraph API_COMMUNICATION["HTTP REST API"]
+
 G[HTTP Requests]
 H[FastAPI Application Server]
+
 end
 
 C --> G
@@ -44,10 +48,21 @@ G --> H
 %% ===============================
 
 subgraph ROUTER_LAYER["FastAPI Router Layer"]
-R1[Health Router\nGET /health]
-R2[Patient Router\nPOST /patients\nGET /patients\nGET /patients/{id}]
-R3[Protocol Router\nPOST /protocol/upload\nGET /protocol/{id}/criteria]
-R4[Simulation Router\nPOST /simulate]
+
+R1[Health Router<br>GET /health]
+
+R2[Patient Router<br>
+POST /patients<br>
+GET /patients<br>
+GET /patients/:id]
+
+R3[Protocol Router<br>
+POST /protocol/upload<br>
+GET /protocol/:id/criteria]
+
+R4[Simulation Router<br>
+POST /simulate]
+
 end
 
 H --> R1
@@ -61,12 +76,14 @@ H --> R4
 %% ===============================
 
 subgraph SCHEMA_LAYER["Pydantic Schema Layer"]
+
 S1[PatientCreate Schema]
 S2[PatientOut Schema]
 S3[PatientWithHistoryOut Schema]
 S4[ProtocolUpload Schema]
 S5[CriterionRule Schema]
 S6[SimulationResult Schema]
+
 end
 
 R2 --> S1
@@ -82,11 +99,13 @@ R4 --> S6
 %% ===============================
 
 subgraph SERVICE_LAYER["Business Logic Services"]
+
 SV1[Patient Service]
 SV2[Protocol Service]
 SV3[Criteria Extraction Service]
 SV4[Simulation Engine]
 SV5[Reasoning Engine]
+
 end
 
 R2 --> SV1
@@ -102,10 +121,10 @@ SV4 --> SV5
 
 subgraph UTILITY_LAYER["Utility / Processing Layer"]
 
-U1[PDF Parser\nPyMuPDF]
-U2[Section Splitter\nRegex Parser]
-U3[Criteria Validator\nPydantic Validation]
-U4[Trend Analyzer\nNumpy Linear Regression]
+U1[PDF Parser<br>PyMuPDF]
+U2[Section Splitter<br>Regex Parser]
+U3[Criteria Validator<br>Pydantic Validation]
+U4[Trend Analyzer<br>Numpy Linear Regression]
 U5[Rule Evaluation Engine]
 
 end
@@ -199,6 +218,7 @@ D3[PostgreSQL Container]
 end
 
 H --> D2
+
 DB1 --> D3
 DB2 --> D3
 DB3 --> D3
@@ -251,9 +271,11 @@ end
 R2 --> PA1
 PA1 --> PA2
 PA2 --> PA3
+
 PA3 --> DB1
 PA3 --> PA4
 PA4 --> DB3
+
 PA3 --> PA5
 PA5 --> DB2
 
@@ -274,6 +296,7 @@ SM6[LLM Reasoning Explanation]
 end
 
 R4 --> SM1
+
 SM1 --> DB1
 SM1 --> DB2
 SM1 --> DB3
@@ -284,6 +307,7 @@ SM2 --> SM3
 SM3 --> SM4
 SM4 --> SM5
 SM5 --> SM6
+
 SM6 --> DB6
 
 
